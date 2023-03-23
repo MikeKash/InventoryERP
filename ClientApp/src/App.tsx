@@ -1,22 +1,17 @@
-import React from 'react'
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
+import { BrowserRouter } from 'react-router-dom'
+import AppRouter from './Router'
 
+// Create a client
+const queryClient = new QueryClient()
 
 export function App() {
-
-    const fetchForecast = async () => {
-          const response = await fetch('weatherforecast')
-        const data = await response.json()
-        console.log("data", data)
-    }
-
     return (
-        <div>
-            <div className='text-2xl font-bold'>HOME</div>
-            {/* create blue button */}
-
-            <button className='p-2 bg-blue-500 text-white'
-                onClick={ ()=>fetchForecast()}
-            >Blue Button</button>
-        </div>
+        // Provide the client to your App
+        <QueryClientProvider client={queryClient}>
+            <BrowserRouter>
+                <AppRouter />
+            </BrowserRouter>
+        </QueryClientProvider>
     )
 }

@@ -20,22 +20,21 @@
   },
   "plugins": ["react", "@typescript-eslint", "react-hooks", "prettier"],
   "rules": {
-    "react/react-in-jsx-scope": "off",
-    "camelcase": "error",
-    "spaced-comment": "error",
-    "quotes": ["error", "single"],
-    "no-duplicate-imports": "error",
-    "no-use-before-define": "off",
-    "@typescript-eslint/no-use-before-define": ["error"],
-    "react/jsx-filename-extension": ["warn", { "extensions": [".tsx"] }],
-    "import/extensions": [
-      "error",
-      "ignorePackages",
-      {
-        "ts": "never",
-        "tsx": "never"
-      }
-    ]
+      "react/react-in-jsx-scope": "off",
+      "camelcase": "error",
+      "spaced-comment": "error",
+      "quotes": ["error", "single"],
+      "no-duplicate-imports": "error",
+      "@typescript-eslint/no-use-before-define": ["error"],
+      "react/jsx-filename-extension": ["warn", { "extensions": [".tsx"] }],
+      "import/extensions": [
+          "error",
+          "ignorePackages",
+          {
+              "ts": "never",
+              "tsx": "never"
+          }
+      ]
   },
   "import/resolver": {
     "typescript": {}
