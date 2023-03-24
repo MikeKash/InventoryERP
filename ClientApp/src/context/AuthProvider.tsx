@@ -3,12 +3,11 @@ import useLocalStorage from "../hooks/useLocalStorage";
 
 export type TAuthContext = {
   auth?: {
-    roles?: string[];
-    user: { userEmail: string; userName: string };
-    accessToken: string;
-  };
-  setAuth: (auth?: TAuthContext["auth"]) => void;
-};
+    roles?: string[]
+    user: { userEmail: string; userName: string }
+  }
+  setAuth: (auth?: TAuthContext['auth']) => void
+}
 
 const AuthContext = createContext<TAuthContext>({
   auth: undefined,

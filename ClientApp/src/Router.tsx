@@ -32,7 +32,6 @@ const AppRouter = () => {
     <Routes>
       <Route element={<AuthLayout />}>
         <Route path='/login' element={<Login />} />
-        <Route path='/logout' element={<Logout />} />
         <Route path='/restore-password' element={<ResetPassword />} />
         <Route path='/register' element={<Register />} />
       </Route>
@@ -42,6 +41,7 @@ const AppRouter = () => {
         </Route>
       ) : (
         <Route path='/' element={<MainLayout />}>
+          <Route path='/logout' element={<Logout />} />
           <Route path='unauthorized' element={<Unauthorized />} />
           {/* protected routes */}
           <Route element={<ProtectedRoute allowedRoles={[ROLES.User]} />}>

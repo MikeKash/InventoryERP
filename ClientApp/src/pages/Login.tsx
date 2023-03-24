@@ -2,7 +2,7 @@ import { Link } from 'react-router-dom'
 import { FieldValues, SubmitHandler, useForm } from 'react-hook-form'
 import { isCorrectEmailFormat } from '../utils/validators'
 import SubmitButton from '../components/SubmitButton'
-import useLogin from '../api/react-query/useLogin'
+import useLogin from '../auth/useLogin'
 
 interface IFormInputs {
   userEmail: string

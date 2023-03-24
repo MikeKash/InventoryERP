@@ -66,6 +66,18 @@ namespace InventoryERP.Services.JWTService
             Response.Cookies.Append("refreshToken", refreshToken.Token, cookieOptions);
         }
 
+        public void SetToken(string token, HttpResponse Response)
+        {
+            var cookieOptions = new CookieOptions
+            {
+                HttpOnly = true,
+                Expires = DateTime.Now.AddMinutes(15),
+                SameSite = Microsoft.AspNetCore.Http.SameSiteMode.None,
+                Secure = true
+            };
+            Response.Cookies.Append("token", token, cookieOptions);
+        }
+
         public void DeleteRefreshToken(string refreshTokenName, HttpResponse Response)
         {
             Response.Cookies.Delete(refreshTokenName, new CookieOptions()
@@ -75,7 +87,7 @@ namespace InventoryERP.Services.JWTService
                 Secure = true
             });
         }
-        public JwtSecurityToken VerifyJWTToken(string jwt)
+        public JwtSecurityToken? VerifyJWTToken(string jwt)
         {
             if (jwt == null)
                 return null;

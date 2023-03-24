@@ -2,8 +2,8 @@ import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { AxiosError } from 'axios'
 import { useContext } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
-import AuthContext from '../../context/AuthProvider'
-import axios from '../axios'
+import AuthContext from '../context/AuthProvider'
+import axios from '../api/axios'
 
 const useLogin = () => {
   const { setAuth } = useContext(AuthContext)
@@ -14,9 +14,8 @@ const useLogin = () => {
     (data: { userEmail: string; password: string }) => axios.post('/api/auth/login', data),
     {
       onSuccess: (response) => {
-        const accessToken = response?.data?.token
         const user = response?.data?.user
-        setAuth({ user, accessToken })
+        setAuth({ user })
         navigate(from || '/', { replace: true })
       },
       onError: (err) => {

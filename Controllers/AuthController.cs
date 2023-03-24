@@ -78,6 +78,7 @@ namespace InventoryERP.Controllers
             {
                 var refreshToken = _jwtService.GenerateRefreshToken();
                 _jwtService.SetRefreshToken(refreshToken, Response);
+                _jwtService.SetToken(token, Response);
 
                 user.RefreshToken = refreshToken.Token;
                 user.TokenCreated = refreshToken.Created;
@@ -88,7 +89,7 @@ namespace InventoryERP.Controllers
                 await _context.SaveChangesAsync();
             }
 
-            return Ok(new { user, token});
+            return Ok(new { user});
         }
 
         [HttpGet("refresh")]
@@ -112,8 +113,9 @@ namespace InventoryERP.Controllers
                 };
 
                 string accessToken = _jwtService.CreateToken(user);
+                _jwtService.SetToken(accessToken, Response);
 
-                return Ok(new { accessToken });
+                return Ok();
             }
 
             return Unauthorized("no refresh token found");

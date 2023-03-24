@@ -9,6 +9,7 @@ namespace InventoryERP.Services.JWTService
         string CreateToken(User user);
         RefreshToken GenerateRefreshToken();
         void SetRefreshToken(RefreshToken newRefreshToken, HttpResponse Reponse);
+        void SetToken(string token, HttpResponse Reponse);
         void DeleteRefreshToken(string refreshTokenName, HttpResponse Response);
     }
 }
