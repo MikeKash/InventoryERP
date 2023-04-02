@@ -29,7 +29,7 @@ const initialFormValues = {
   companyName: '',
   password: '',
 }
-export const formFields: IFormFields[] = [
+const formFields: IFormFields[] = [
   {
     name: 'userName',
     displayName: 'Full Name',

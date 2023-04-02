@@ -2,7 +2,7 @@ import { Link } from 'react-router-dom'
 import { FieldValues, SubmitHandler, useForm } from 'react-hook-form'
 import { isCorrectEmailFormat } from '../utils/validators'
 import SubmitButton from '../components/SubmitButton'
-import useLogin from '../auth/useLogin'
+import useLogin from '../api/auth/useLogin'
 
 interface IFormInputs {
   userEmail: string
@@ -61,7 +61,7 @@ const Login = () => {
     formState: { errors },
   } = useForm()
 
-  const { mutateAsync: login } = useLogin()
+  const { mutate: login } = useLogin()
 
   const handleLogin: SubmitHandler<FieldValues> = async (formFields) => {
     const { userEmail, password } = formFields

@@ -8,6 +8,7 @@ import * as serviceWorkerRegistration from './utils/serviceWorkerRegistration'
 
 const container = document.getElementById('root')
 // Create a root.
+// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
 const root = ReactDOMClient.createRoot(container!)
 root.render(
   <StrictMode>

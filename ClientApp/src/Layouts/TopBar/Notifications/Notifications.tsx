@@ -1,28 +1,36 @@
-import React from 'react'
+import React, { PropsWithChildren } from 'react'
 import { TopBarMenus } from '../types'
 
-const notifications = [
-  {
-    message: "Hey, what's up? All set htmlFor the presentation?",
-    time: 'a few moments ago',
-    onClickACtion: undefined,
-  },
-  {
-    message: 'I just bought a new awesome theme for my dashboard',
-    time: '2 hours ago',
-    onClickACtion: undefined,
-  },
-  {
-    message: 'Check out these awesome shots I got on my camera yesterday',
-    time: 'yesterday',
-    onClickACtion: undefined,
-  },
-  {
-    message: 'Good news! We have just launched a new product',
-    time: '2 days ago',
-    onClickACtion: undefined,
-  },
-]
+interface INotification {
+  message: string
+  time: string
+  onClickACtion: () => void
+}
+
+// const notifications = [
+//   {
+//     message: "Hey, what's up? All set htmlFor the presentation?",
+//     time: 'a few moments ago',
+//     onClickACtion: undefined,
+//   },
+//   {
+//     message: 'I just bought a new awesome theme for my dashboard',
+//     time: '2 hours ago',
+//     onClickACtion: undefined,
+//   },
+//   {
+//     message: 'Check out these awesome shots I got on my camera yesterday',
+//     time: 'yesterday',
+//     onClickACtion: undefined,
+//   },
+//   {
+//     message: 'Good news! We have just launched a new product',
+//     time: '2 days ago',
+//     onClickACtion: undefined,
+//   },
+// ]
+
+const notifications: INotification[] = []
 
 const Notifications = ({
   setOpenMenu,
@@ -52,23 +60,29 @@ const Notifications = ({
         </svg>
       </button>
       {openMenu === 'notification' ? (
-        <div className='absolute top-10 right-16 overflow-hidden z-50 my-4 max-w-sm text-base list-none bg-white rounded divide-y divide-gray-100 shadow-lg dark:divide-gray-600 dark:bg-gray-700'>
+        <div className='absolute top-10 right-16 overflow-hidden z-50 my-4 max-w-sm text-base list-none bg-white rounded divide-y divide-gray-100 shadow-lg dark:divide-gray-600 dark:bg-gray-700 min-w-[200px]'>
           <div className='block py-2 px-4 text-base font-medium text-center text-gray-700 bg-gray-50 dark:bg-gray-700 dark:text-gray-400'>
             Notifications
           </div>
           <div>
-            {notifications.map((notification) => (
-              <div className='flex py-3 px-4 border-b hover:bg-gray-100 dark:hover:bg-gray-600 dark:border-gray-600'>
-                <div className='pl-3 w-full'>
+            {notifications?.length ? (
+              notifications.map((notification) => (
+                <Notification>
                   <div className='text-gray-500 font-normal text-sm mb-1.5 dark:text-gray-400'>
                     {notification.message}
                   </div>
                   <div className='text-xs font-medium text-blue-700 dark:text-primary-400'>
                     {notification.time}
                   </div>
+                </Notification>
+              ))
+            ) : (
+              <Notification>
+                <div className='text-gray-500 font-normal text-sm mb-1.5 dark:text-gray-400 text-center'>
+                  Nothing to show
                 </div>
-              </div>
-            ))}
+              </Notification>
+            )}
           </div>
         </div>
       ) : null}
@@ -77,3 +91,9 @@ const Notifications = ({
 }
 
 export default Notifications
+
+const Notification = ({ children }: PropsWithChildren) => (
+  <div className='flex py-3 px-4 border-b hover:bg-gray-100 dark:hover:bg-gray-600 dark:border-gray-600'>
+    <div className='pl-3 w-full'>{children}</div>
+  </div>
+)

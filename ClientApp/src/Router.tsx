@@ -12,6 +12,8 @@ import ResetPassword from './pages/ResetPassword'
 import AuthLayout from './Layouts/AuthLayout'
 import useAuth from './hooks/useAuth'
 import { useEffect } from 'react'
+import Items from './pages/Items/Items'
+import Item from './pages/Items/Item'
 
 const ROLES = {
   User: 2001,
@@ -27,7 +29,6 @@ const AppRouter = () => {
     if (!auth) navigate('/login')
   }, [auth])
 
-  console.log('auth', auth)
   return (
     <Routes>
       <Route element={<AuthLayout />}>
@@ -40,20 +41,24 @@ const AppRouter = () => {
           <Route path='/' element={<></>} />
         </Route>
       ) : (
-        <Route path='/' element={<MainLayout />}>
-          <Route path='/logout' element={<Logout />} />
-          <Route path='unauthorized' element={<Unauthorized />} />
-          {/* protected routes */}
-          <Route element={<ProtectedRoute allowedRoles={[ROLES.User]} />}>
+        <Route element={<ProtectedRoute allowedRoles={[ROLES.User]} />}>
+          <Route path='/' element={<MainLayout />}>
+            <Route path='/logout' element={<Logout />} />
+            <Route path='unauthorized' element={<Unauthorized />} />
+            {/* protected routes */}
+
             <Route path='/' element={<Home />} />
-          </Route>
 
-          <Route element={<ProtectedRoute allowedRoles={[ROLES.Admin]} />}>
+            <Route path='items' element={<Items />} />
+            <Route path='item' element={<Item />} />
+
+            {/* <Route element={<ProtectedRoute allowedRoles={[ROLES.Admin]} />}>
             <Route path='admin' element={<Admin />} />
-          </Route>
+          </Route> */}
 
-          {/* catch all */}
-          <Route path='*' element={<Missing />} />
+            {/* catch all */}
+            <Route path='*' element={<Missing />} />
+          </Route>
         </Route>
       )}
     </Routes>

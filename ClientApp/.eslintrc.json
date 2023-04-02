@@ -1,16 +1,20 @@
 {
   "env": {
+    "node": true,
+    "commonjs": true,
     "browser": true,
-    "es2021": true,
+    "es6": true,
     "jest": true
   },
   "extends": [
     "eslint:recommended",
-    "plugin:react/recommended",
+    "plugin:@typescript-eslint/eslint-recommended",
     "plugin:@typescript-eslint/recommended",
+    "plugin:import/warnings",
     "prettier"
   ],
   "parser": "@typescript-eslint/parser",
+  "plugins": ["react", "@typescript-eslint", "react-hooks", "prettier"],
   "parserOptions": {
     "ecmaFeatures": {
       "jsx": true
@@ -18,25 +22,17 @@
     "ecmaVersion": "latest",
     "sourceType": "module"
   },
-  "plugins": ["react", "@typescript-eslint", "react-hooks", "prettier"],
+
   "rules": {
-      "react/react-in-jsx-scope": "off",
-      "camelcase": "error",
-      "spaced-comment": "error",
-      "quotes": ["error", "single"],
-      "no-duplicate-imports": "error",
-      "@typescript-eslint/no-use-before-define": ["error"],
-      "react/jsx-filename-extension": ["warn", { "extensions": [".tsx"] }],
-      "import/extensions": [
-          "error",
-          "ignorePackages",
-          {
-              "ts": "never",
-              "tsx": "never"
-          }
-      ]
-  },
-  "import/resolver": {
-    "typescript": {}
+    "react/react-in-jsx-scope": "off",
+    "react-hooks/rules-of-hooks": "error",
+    "react-hooks/exhaustive-deps": "warn",
+    "camelcase": "error",
+    "spaced-comment": "error",
+    "quotes": ["error", "single"],
+    "@typescript-eslint/no-duplicate-imports": "error",
+    "@typescript-eslint/no-use-before-define": ["error"],
+    "react/jsx-filename-extension": ["warn", { "extensions": [".tsx"] }],
+    "@typescript-eslint/ban-ts-comment": "off"
   }
 }

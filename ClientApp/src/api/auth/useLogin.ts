@@ -2,8 +2,8 @@ import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { AxiosError } from 'axios'
 import { useContext } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
-import AuthContext from '../context/AuthProvider'
-import axios from '../api/axios'
+import AuthContext from '../../context/AuthProvider'
+import axios from '../axios'
 
 const useLogin = () => {
   const { setAuth } = useContext(AuthContext)
