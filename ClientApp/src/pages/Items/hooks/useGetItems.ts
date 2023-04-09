@@ -1,5 +1,6 @@
 import { useQuery } from '@tanstack/react-query'
-import useAxiosPrivate from '../../hooks/useAxiosPrivate'
+import useAxiosPrivate from '../../../hooks/useAxiosPrivate'
+import { IItems } from '../types'
 
 const useGetItems = ({
   limit,
@@ -19,7 +20,7 @@ const useGetItems = ({
   return useQuery(
     ['items', limit, pageNumber, sortBy, desc],
     async () => {
-      const { data } = await axiosPrivate.get(
+      const { data } = await axiosPrivate.get<IItems>(
         `/api/items?pageSize=${limit}&pageNumber=${pageNumber}
         ${sortBy ? `&sortBy=${sortBy}` : ''}
         ${desc !== undefined ? `&desc=${desc}` : ''}

@@ -30,8 +30,8 @@ const Sidebar = ({
     >
       <div className='overflow-y-auto py-5 px-3 h-full bg-white '>
         <ul className='space-y-2'>
-          {mainMenuItems.map((item, idx) => (
-            <li key={`menu-item-${idx}`}>
+          {mainMenuItems.map((item) => (
+            <li key={`menu-item-${item.label}`}>
               {!item.subMenu.length ? (
                 <MenuLink
                   navigateTo={item.navigate}
@@ -78,7 +78,7 @@ const Sidebar = ({
                   {openMenus.includes(item.label) && sidebar.isOpen ? (
                     <ul className='py-2 space-y-2'>
                       {item.subMenu.map((subItem, idx) => (
-                        <li>
+                        <li key={subItem.label}>
                           <Link
                             to={subItem.navigate}
                             className='flex items-center p-2 pl-11 w-full text-base font-normal text-gray-900 rounded-lg transition duration-75 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700'
@@ -95,13 +95,13 @@ const Sidebar = ({
           ))}
         </ul>
         <ul className='pt-5 mt-5 space-y-2 border-t border-gray-200 dark:border-gray-700'>
-          {secondMenuItems.map((item, idx) => (
-            <li key={`menu-item-${idx}`}>
+          {secondMenuItems.map((submenu) => (
+            <li key={`submenu-item-${submenu.label}`}>
               <MenuLink
                 sidebar={sidebar}
-                navigateTo={item.navigate}
-                icon={item.icon}
-                label={item.label}
+                navigateTo={submenu.navigate}
+                icon={submenu.icon}
+                label={submenu.label}
               />
             </li>
           ))}

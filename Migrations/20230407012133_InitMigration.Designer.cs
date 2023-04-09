@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace InventoryERP.Migrations
 {
     [DbContext(typeof(InventoryERPContext))]
-    [Migration("20230325141526_InitMigration")]
+    [Migration("20230407012133_InitMigration")]
     partial class InitMigration
     {
         /// <inheritdoc />
@@ -27,11 +27,9 @@ namespace InventoryERP.Migrations
 
             modelBuilder.Entity("InventoryERP.Models.Address", b =>
                 {
-                    b.Property<int>("AddressID")
+                    b.Property<Guid>("AddressID")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("AddressID"));
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("City")
                         .IsRequired()
@@ -61,11 +59,14 @@ namespace InventoryERP.Migrations
                     b.ToTable("Addresses");
                 });
 
-            modelBuilder.Entity("InventoryERP.Models.Item", b =>
+            modelBuilder.Entity("InventoryERP.Models.Items.Item", b =>
                 {
                     b.Property<Guid>("ItemID")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
 
                     b.Property<string>("ItemDescription")
                         .IsRequired()
@@ -167,9 +168,6 @@ namespace InventoryERP.Migrations
                     b.Property<Guid>("AddressID")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<int>("AddressID1")
-                        .HasColumnType("int");
-
                     b.Property<string>("SupplierCountry")
                         .IsRequired()
                         .HasColumnType("nvarchar(100)");
@@ -180,7 +178,7 @@ namespace InventoryERP.Migrations
 
                     b.HasKey("SupplierID");
 
-                    b.HasIndex("AddressID1");
+                    b.HasIndex("AddressID");
 
                     b.ToTable("Suppliers");
                 });
@@ -227,7 +225,7 @@ namespace InventoryERP.Migrations
 
             modelBuilder.Entity("InventoryERP.Models.PurchaseOrderDetail", b =>
                 {
-                    b.HasOne("InventoryERP.Models.Item", "Item")
+                    b.HasOne("InventoryERP.Models.Items.Item", "Item")
                         .WithMany()
                         .HasForeignKey("ItemID")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -257,7 +255,7 @@ namespace InventoryERP.Migrations
                 {
                     b.HasOne("InventoryERP.Models.Address", "Address")
                         .WithMany()
-                        .HasForeignKey("AddressID1")
+                        .HasForeignKey("AddressID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 

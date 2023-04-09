@@ -15,8 +15,7 @@ namespace InventoryERP.Migrations
                 name: "Addresses",
                 columns: table => new
                 {
-                    AddressID = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
+                    AddressID = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     Country = table.Column<string>(type: "nvarchar(50)", nullable: false),
                     State = table.Column<string>(type: "nvarchar(50)", nullable: false),
                     City = table.Column<string>(type: "nvarchar(50)", nullable: false),
@@ -38,7 +37,8 @@ namespace InventoryERP.Migrations
                     ItemDescription = table.Column<string>(type: "nvarchar(200)", nullable: false),
                     ItemUM = table.Column<string>(type: "nvarchar(5)", nullable: false),
                     MinInventory = table.Column<string>(type: "nvarchar(10)", nullable: false),
-                    MaxInventory = table.Column<string>(type: "nvarchar(10)", nullable: false)
+                    MaxInventory = table.Column<string>(type: "nvarchar(10)", nullable: false),
+                    IsActive = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -69,7 +69,6 @@ namespace InventoryERP.Migrations
                 {
                     SupplierID = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     AddressID = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    AddressID1 = table.Column<int>(type: "int", nullable: false),
                     SupplierName = table.Column<string>(type: "nvarchar(100)", nullable: false),
                     SupplierCountry = table.Column<string>(type: "nvarchar(100)", nullable: false)
                 },
@@ -77,8 +76,8 @@ namespace InventoryERP.Migrations
                 {
                     table.PrimaryKey("PK_Suppliers", x => x.SupplierID);
                     table.ForeignKey(
-                        name: "FK_Suppliers_Addresses_AddressID1",
-                        column: x => x.AddressID1,
+                        name: "FK_Suppliers_Addresses_AddressID",
+                        column: x => x.AddressID,
                         principalTable: "Addresses",
                         principalColumn: "AddressID",
                         onDelete: ReferentialAction.Cascade);
@@ -152,9 +151,9 @@ namespace InventoryERP.Migrations
                 column: "SupplierID");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Suppliers_AddressID1",
+                name: "IX_Suppliers_AddressID",
                 table: "Suppliers",
-                column: "AddressID1");
+                column: "AddressID");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Users_UserEmail",

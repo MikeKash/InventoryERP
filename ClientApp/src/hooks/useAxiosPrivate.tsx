@@ -3,17 +3,16 @@ import { useEffect } from 'react'
 import useRefreshToken from './useRefreshToken'
 import useAuth from './useAuth'
 import { InternalAxiosRequestConfig } from 'axios'
+import { useNavigate } from 'react-router-dom'
 
 const useAxiosPrivate = () => {
   const refresh = useRefreshToken()
   const { auth, setAuth } = useAuth()
+  const navigate = useNavigate()
 
   useEffect(() => {
     const requestIntercept = axios.interceptors.request.use(
       (config: InternalAxiosRequestConfig) => {
-        // if (config.headers && !config.headers['Authorization'])
-        //   config.headers['Authorization'] = `Bearer ${auth?.accessToken}`
-
         return config
       },
       (error) => Promise.reject(error),
@@ -22,12 +21,12 @@ const useAxiosPrivate = () => {
     const responseIntercept = axios.interceptors.response.use(
       (response) => response,
       async (error) => {
+        const { response } = error
+
         const prevRequest = error?.config
         if (
-          error?.response?.status === 401 &&
-          !['no refresh token found', 'refresh token expired', 'user not found'].includes(
-            error?.response?.data,
-          ) &&
+          response?.status === 401 &&
+          !['no refresh token found', 'refresh token expired'].includes(response?.data) &&
           !prevRequest?.sent
         ) {
           prevRequest.sent = true
@@ -35,7 +34,11 @@ const useAxiosPrivate = () => {
           // prevRequest.headers['Authorization'] = `Bearer ${newAccessToken}`
           return axios(prevRequest)
         } else {
-          // setAuth(undefined)
+          if (response?.data === 'no refresh token found') {
+            alert('Session expired, you need to log in again.')
+            setAuth(undefined)
+            navigate('/login')
+          }
         }
         return Promise.reject(error)
       },
@@ -45,7 +48,7 @@ const useAxiosPrivate = () => {
       axios.interceptors.request.eject(requestIntercept)
       axios.interceptors.response.eject(responseIntercept)
     }
-  }, [auth, refresh])
+  }, [auth, refresh, navigate, setAuth])
 
   return axios
 }

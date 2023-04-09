@@ -27,7 +27,7 @@ const AppRouter = () => {
 
   useEffect(() => {
     if (!auth) navigate('/login')
-  }, [auth])
+  }, [auth, navigate])
 
   return (
     <Routes>
@@ -50,7 +50,8 @@ const AppRouter = () => {
             <Route path='/' element={<Home />} />
 
             <Route path='items' element={<Items />} />
-            <Route path='item' element={<Item />} />
+            <Route path='item/:id' element={<Item />} />
+            <Route path='item/' element={<Item />} />
 
             {/* <Route element={<ProtectedRoute allowedRoles={[ROLES.Admin]} />}>
             <Route path='admin' element={<Admin />} />

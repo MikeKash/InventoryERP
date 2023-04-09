@@ -45,7 +45,7 @@ namespace InventoryERP.Controllers
             {
                 return NotFound();
             }
-            IQueryable<Item> items = _context.Items;
+            IQueryable<Item> items = _context.Items.Where((i) => i.IsActive);
 
             if (!String.IsNullOrEmpty(queryParameters.Search))
             {
@@ -173,7 +173,10 @@ namespace InventoryERP.Controllers
                 return NotFound();
             }
 
-            _context.Items.Remove(item);
+            _context.Entry(item).State = EntityState.Modified;
+            item.IsActive = false;
+
+            //_context.Items.Remove(item);
             await _context.SaveChangesAsync();
 
             return NoContent();

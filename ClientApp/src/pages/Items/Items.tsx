@@ -1,7 +1,7 @@
 import { Table as FlowbiteTable } from 'flowbite-react'
 import { Button, Card, Checkbox, TextInput } from 'flowbite-react/lib/esm/components'
-import React, { Fragment, useEffect, useMemo, useState } from 'react'
-import useGetItems from '../../api/items/useGetItems'
+import { Fragment, useEffect, useMemo, useState } from 'react'
+import useGetItems from './hooks/useGetItems'
 import SkeletonItemsTable from './SkeletonItemsTable'
 import {
   useReactTable,
@@ -13,17 +13,33 @@ import {
 } from '@tanstack/react-table'
 import ItemModal from './ItemModal'
 import useDebounce from '../../hooks/useDebounce'
+import { IItem } from './types'
+import useDeleteItem from './hooks/useDeleteItem'
+import useUpdateItem from './hooks/useUpdateItem'
+import { useNavigate } from 'react-router-dom'
 
 const Items = () => {
+  const navigate = useNavigate()
+
   const [showAddItemModal, setShowAddItemModal] = useState(false)
   const [rowSelection, setRowSelection] = useState({})
   const [sorting, setSorting] = useState<SortingState>([])
   const [search, setSearch] = useState('')
+  const [selectedItemId, setSelectedItemId] = useState<string | undefined>()
   const debouncedSearch: string = useDebounce<string>(search, 500)
   const [{ pageIndex, pageSize }, setPagination] = useState<PaginationState>({
     pageIndex: 0,
     pageSize: 10,
   })
+
+  const pageNumber = pageIndex + 1
+  const sortBy = sorting?.length ? sorting[0].id : ''
+  const desc = sorting?.length
+    ? sorting[0].desc !== undefined
+      ? sorting[0].desc
+      : true
+    : undefined
+
   const {
     data: itemsData,
     isLoading,
@@ -31,11 +47,21 @@ const Items = () => {
     refetch,
   } = useGetItems({
     search: debouncedSearch,
-    pageNumber: `${pageIndex + 1}`,
+    pageNumber: `${pageNumber}`,
     limit: `${pageSize}`,
-    sortBy: sorting?.length ? sorting[0].id : '',
-    desc: sorting?.length ? (sorting[0].desc !== undefined ? sorting[0].desc : true) : undefined,
+    sortBy,
+    desc,
   })
+
+  const { mutateAsync: updateItem, isLoading: updatingItem } = useUpdateItem({
+    search: debouncedSearch,
+    pageNumber: `${pageNumber}`,
+    limit: `${pageSize}`,
+    sortBy,
+    desc,
+  })
+  const { mutate } = useDeleteItem()
+
   const { data, totalPages, totalRecords } = useMemo(() => {
     return {
       data: itemsData?.items || [],
@@ -50,7 +76,20 @@ const Items = () => {
       pageIndex: 0,
     })
     refetch()
-  }, [debouncedSearch, refetch])
+  }, [debouncedSearch, pageSize, refetch])
+
+  const onEdit = (itemId: string) => {
+    setSelectedItemId(itemId)
+    setShowAddItemModal(true)
+  }
+
+  const onDelete = (itemId: string) => {
+    if (confirm('Are you sure you want to delete this item?')) {
+      mutate(itemId)
+    }
+  }
+
+  const selectedItem = (itemsData?.items as IItem[])?.find((item) => item.itemID === selectedItemId)
 
   const pagination = useMemo(
     () => ({
@@ -113,16 +152,17 @@ const Items = () => {
         // @ts-ignore just for now
         cell: ({ row }) => (
           <div className='flex  gap-2'>
+            <span onClick={() => navigate(`/item/${row.original.itemID}`)}>Details</span>
             <span
               onClick={() => {
-                console.log('EDIT', row.original.itemID)
+                onEdit(row.original.itemID)
               }}
             >
               Edit
             </span>
             <span
               onClick={() => {
-                console.log('DELETE', row.original.itemID)
+                onDelete(row.original.itemID)
               }}
             >
               Delete
@@ -175,7 +215,7 @@ const Items = () => {
               <Fragment key={headerGroup.id}>
                 {headerGroup.headers.map((header) => (
                   <FlowbiteTable.HeadCell key={header.id} className='text-center'>
-                    <div
+                    <span
                       {...{
                         className: header.column.getCanSort() ? 'cursor-pointer select-none' : '',
                         onClick: header.column.getToggleSortingHandler(),
@@ -186,7 +226,7 @@ const Items = () => {
                         asc: ' 🔼',
                         desc: ' 🔽',
                       }[header.column.getIsSorted() as string] ?? null}
-                    </div>
+                    </span>
                   </FlowbiteTable.HeadCell>
                 ))}
               </Fragment>
@@ -225,9 +265,11 @@ const Items = () => {
                 </FlowbiteTable.Row>
               </>
             ) : (
-              <FlowbiteTable.Cell className='text-center' colSpan={10000}>
-                Nothing to show
-              </FlowbiteTable.Cell>
+              <FlowbiteTable.Row>
+                <FlowbiteTable.Cell className='text-center' colSpan={10000}>
+                  Nothing to show
+                </FlowbiteTable.Cell>
+              </FlowbiteTable.Row>
             )}
           </FlowbiteTable.Body>
         </FlowbiteTable>
@@ -308,7 +350,16 @@ const Items = () => {
           )}
         </div>
       </Card>
-      <ItemModal showModal={showAddItemModal} onClose={() => setShowAddItemModal(false)} />
+      <ItemModal
+        selectedItem={selectedItem}
+        showModal={showAddItemModal}
+        onClose={() => {
+          setSelectedItemId(undefined)
+          setShowAddItemModal(false)
+        }}
+        updateItem={updateItem}
+        updatingItem={updatingItem}
+      />
     </div>
   )
 }

@@ -3,12 +3,12 @@ import axios from '../../../api/axios'
 import { AxiosError } from 'axios'
 import { IItem } from '../types'
 
-const useAddItem = () => {
+const useDeleteItem = () => {
   const queryClient = useQueryClient()
 
-  return useMutation((data: IItem) => axios.post('/api/items', data), {
+  return useMutation((itemId: IItem['itemID']) => axios.delete(`/api/items/${itemId}`), {
     onSuccess: () => {
-      alert('Item added successfully')
+      alert('Item Deleted successfully')
       queryClient.refetchQueries(['items'])
     },
     onError: (err) => {
@@ -22,4 +22,4 @@ const useAddItem = () => {
   })
 }
 
-export default useAddItem
+export default useDeleteItem

@@ -3,7 +3,7 @@ import React from 'react'
 
 const SkeletonItemsTable = ({ pageSize }: { pageSize: number }) => {
   const rows = Array.from({ length: pageSize }, (_, index) => index)
-  const cols = Array.from({ length: 5 }, (_, index) => index)
+  const cols = Array.from({ length: 7 }, (_, index) => index)
 
   return (
     <>
