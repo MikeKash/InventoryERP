@@ -13,7 +13,8 @@ import AuthLayout from './Layouts/AuthLayout'
 import useAuth from './hooks/useAuth'
 import { useEffect } from 'react'
 import Items from './pages/Items/Items'
-import Item from './pages/Items/Item'
+import NewItem from './pages/Items/NewItem'
+import ItemDetails from './pages/Items/ItemDetails'
 
 const ROLES = {
   User: 2001,
@@ -48,10 +49,9 @@ const AppRouter = () => {
             {/* protected routes */}
 
             <Route path='/' element={<Home />} />
-
             <Route path='items' element={<Items />} />
-            <Route path='item/:id' element={<Item />} />
-            <Route path='item/' element={<Item />} />
+            <Route path='item/:id' element={<ItemDetails />} />
+            <Route path='item/' element={<NewItem />} />
 
             {/* <Route element={<ProtectedRoute allowedRoles={[ROLES.Admin]} />}>
             <Route path='admin' element={<Admin />} />

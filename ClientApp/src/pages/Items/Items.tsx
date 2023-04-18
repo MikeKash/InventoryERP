@@ -53,13 +53,6 @@ const Items = () => {
     desc,
   })
 
-  const { mutateAsync: updateItem, isLoading: updatingItem } = useUpdateItem({
-    search: debouncedSearch,
-    pageNumber: `${pageNumber}`,
-    limit: `${pageSize}`,
-    sortBy,
-    desc,
-  })
   const { mutate } = useDeleteItem()
 
   const { data, totalPages, totalRecords } = useMemo(() => {
@@ -357,8 +350,11 @@ const Items = () => {
           setSelectedItemId(undefined)
           setShowAddItemModal(false)
         }}
-        updateItem={updateItem}
-        updatingItem={updatingItem}
+        debouncedSearch={debouncedSearch}
+        pageNumber={pageIndex + 1}
+        pageSize={pageSize}
+        sortBy={sortBy}
+        desc={desc}
       />
     </div>
   )
