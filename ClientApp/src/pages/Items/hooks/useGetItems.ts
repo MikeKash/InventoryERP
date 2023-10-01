@@ -18,7 +18,7 @@ const useGetItems = ({
   const axiosPrivate = useAxiosPrivate()
 
   return useQuery(
-    ['items', limit, pageNumber, sortBy, desc],
+    ['items', limit, pageNumber, sortBy, desc, search],
     async () => {
       const { data } = await axiosPrivate.get<IItems>(
         `/api/items?pageSize=${limit}&pageNumber=${pageNumber}

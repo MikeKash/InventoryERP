@@ -1,28 +1,17 @@
 import { Table as FlowbiteTable } from 'flowbite-react'
-import { Button, Card, Checkbox, TextInput } from 'flowbite-react/lib/esm/components'
-import { Fragment, useEffect, useMemo, useState } from 'react'
+import { Button, Card, TextInput } from 'flowbite-react/lib/esm/components'
+import { Fragment, useCallback, useEffect, useState } from 'react'
 import useGetItems from './hooks/useGetItems'
 import SkeletonItemsTable from './SkeletonItemsTable'
-import {
-  useReactTable,
-  PaginationState,
-  getCoreRowModel,
-  flexRender,
-  SortingState,
-  getSortedRowModel,
-} from '@tanstack/react-table'
+import { PaginationState, flexRender, SortingState } from '@tanstack/react-table'
 import ItemModal from './ItemModal'
 import useDebounce from '../../hooks/useDebounce'
 import { IItem } from './types'
 import useDeleteItem from './hooks/useDeleteItem'
-import useUpdateItem from './hooks/useUpdateItem'
-import { useNavigate } from 'react-router-dom'
+import useItemsTable from './hooks/useItemsTable'
 
 const Items = () => {
-  const navigate = useNavigate()
-
   const [showAddItemModal, setShowAddItemModal] = useState(false)
-  const [rowSelection, setRowSelection] = useState({})
   const [sorting, setSorting] = useState<SortingState>([])
   const [search, setSearch] = useState('')
   const [selectedItemId, setSelectedItemId] = useState<string | undefined>()
@@ -32,7 +21,6 @@ const Items = () => {
     pageSize: 10,
   })
 
-  const pageNumber = pageIndex + 1
   const sortBy = sorting?.length ? sorting[0].id : ''
   const desc = sorting?.length
     ? sorting[0].desc !== undefined
@@ -47,143 +35,43 @@ const Items = () => {
     refetch,
   } = useGetItems({
     search: debouncedSearch,
-    pageNumber: `${pageNumber}`,
+    pageNumber: `${pageIndex + 1}`,
     limit: `${pageSize}`,
     sortBy,
     desc,
   })
 
-  const { mutate } = useDeleteItem()
+  const { mutate: deleteItem } = useDeleteItem()
 
-  const { data, totalPages, totalRecords } = useMemo(() => {
-    return {
-      data: itemsData?.items || [],
-      totalPages: itemsData?.totalPages,
-      totalRecords: itemsData?.totalRecords,
-    }
-  }, [itemsData])
+  const onEdit = useCallback((itemId: string) => {
+    setSelectedItemId(itemId)
+    setShowAddItemModal(true)
+  }, [])
+
+  const onDelete = useCallback(
+    (itemId: string) => {
+      if (confirm('Are you sure you want to delete this item?')) {
+        deleteItem(itemId)
+      }
+    },
+    [deleteItem],
+  )
+
+  const { table, totalRecords } = useItemsTable({
+    onEdit,
+    onDelete,
+    itemsData,
+    setPagination,
+    pagination: { pageIndex, pageSize },
+    sorting,
+    setSorting,
+  })
 
   useEffect(() => {
-    setPagination({
-      pageSize,
-      pageIndex: 0,
-    })
     refetch()
   }, [debouncedSearch, pageSize, refetch])
 
-  const onEdit = (itemId: string) => {
-    setSelectedItemId(itemId)
-    setShowAddItemModal(true)
-  }
-
-  const onDelete = (itemId: string) => {
-    if (confirm('Are you sure you want to delete this item?')) {
-      mutate(itemId)
-    }
-  }
-
   const selectedItem = (itemsData?.items as IItem[])?.find((item) => item.itemID === selectedItemId)
-
-  const pagination = useMemo(
-    () => ({
-      pageIndex,
-      pageSize,
-    }),
-    [pageIndex, pageSize],
-  )
-
-  const columns = useMemo(
-    () => [
-      {
-        id: 'select',
-        // @ts-ignore  just for now
-        header: ({ table }) => (
-          <Checkbox
-            {...{
-              checked: table.getIsAllRowsSelected(),
-              indeterminate: table.getIsSomeRowsSelected().toString(),
-              onChange: table.getToggleAllRowsSelectedHandler(),
-            }}
-          />
-        ),
-        // @ts-ignore just for now
-        cell: ({ row }) => (
-          <div className='px-1'>
-            <Checkbox
-              {...{
-                checked: row.getIsSelected(),
-                disabled: !row.getCanSelect(),
-                indeterminate: row.getIsSomeSelected().toString(),
-                onChange: row.getToggleSelectedHandler(),
-              }}
-            />
-          </div>
-        ),
-      },
-      {
-        header: 'Item #',
-        accessorKey: 'itemNumber',
-      },
-      {
-        header: 'Description',
-        accessorKey: 'itemDescription',
-      },
-      {
-        header: 'Units of measure',
-        accessorKey: 'itemUM',
-      },
-      {
-        header: 'Max Level',
-        accessorKey: 'maxInventory',
-      },
-      {
-        header: 'Min Level',
-        accessorKey: 'minInventory',
-      },
-      {
-        header: 'Actions',
-        // @ts-ignore just for now
-        cell: ({ row }) => (
-          <div className='flex  gap-2'>
-            <span onClick={() => navigate(`/item/${row.original.itemID}`)}>Details</span>
-            <span
-              onClick={() => {
-                onEdit(row.original.itemID)
-              }}
-            >
-              Edit
-            </span>
-            <span
-              onClick={() => {
-                onDelete(row.original.itemID)
-              }}
-            >
-              Delete
-            </span>
-          </div>
-        ),
-      },
-    ],
-    [],
-  )
-
-  const table = useReactTable({
-    columns,
-    data: data || [],
-    manualPagination: true,
-    pageCount: totalPages,
-    state: {
-      pagination,
-      sorting,
-      rowSelection,
-    },
-    enableRowSelection: true,
-    onPaginationChange: setPagination,
-    onRowSelectionChange: setRowSelection,
-    getCoreRowModel: getCoreRowModel(),
-    onSortingChange: setSorting,
-    getSortedRowModel: getSortedRowModel(),
-  })
 
   const resultsCount = table.getRowModel().rows.length
 
@@ -196,7 +84,13 @@ const Items = () => {
             className='w-1/2'
             type='text'
             sizing='md'
-            onChange={(e) => setSearch(e.target.value)}
+            onChange={(e) => {
+              setSearch(e.target.value)
+              setPagination({
+                pageSize,
+                pageIndex: 0,
+              })
+            }}
             placeholder='Search by Item Number or Description'
           />
           <Button onClick={() => setShowAddItemModal(true)}>Add Item +</Button>

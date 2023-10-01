@@ -13,14 +13,16 @@ const useUpdateItem = ({
   limit?: string
   pageNumber?: string
   sortBy?: string
-  search?: string
   desc?: boolean
+  search: string
 }) => {
   const queryClient = useQueryClient()
 
   return useMutation((data: IItem) => axios.put(`/api/items/${data.itemID}`, data), {
     onMutate: async (data) => {
-      await queryClient.cancelQueries({ queryKey: ['items', limit, pageNumber, sortBy, desc] })
+      await queryClient.cancelQueries({
+        queryKey: ['items', limit, pageNumber, sortBy, desc, search],
+      })
       // Snapshot the previous value
       const previousData: IItems | undefined = queryClient.getQueryData([
         'items',

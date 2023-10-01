@@ -118,7 +118,7 @@ const useItemForm = ({
 
   const { mutateAsync: addItem, isLoading } = useAddItem()
   const { mutateAsync: updateItem, isLoading: updatingItem } = useUpdateItem({
-    search: debouncedSearch,
+    search: debouncedSearch || '',
     pageNumber: `${pageNumber}`,
     limit: `${pageSize}`,
     sortBy,
