@@ -1,6 +1,7 @@
 import { Modal } from 'flowbite-react'
 import { IItem } from './types'
 import useItemForm from './hooks/useItemForm'
+import { ItemForm, ItemFormSubmitBtn } from './ItemForm'
 
 const ItemModal = ({
   selectedItem,
@@ -21,7 +22,16 @@ const ItemModal = ({
   sortBy?: string
   desc?: boolean
 }) => {
-  const { ItemForm, ItemFormSubmitBtn, reset } = useItemForm({
+  const {
+    register,
+    errors,
+    reset,
+    itemFormFields,
+    handleSubmit,
+    handleAddOrEditItem,
+    updatingItem,
+    isLoading,
+  } = useItemForm({
     selectedItem,
     debouncedSearch,
     pageNumber,
@@ -39,10 +49,21 @@ const ItemModal = ({
     <Modal show={showModal} onClose={() => closeModal()}>
       <Modal.Header>{selectedItem ? 'Update ' : 'Add New '}Item</Modal.Header>
       <Modal.Body>
-        <ItemForm />
+        <ItemForm
+          register={register}
+          errors={errors}
+          selectedItem={selectedItem}
+          itemFormFields={itemFormFields}
+        />
       </Modal.Body>
       <Modal.Footer>
-        <ItemFormSubmitBtn />
+        <ItemFormSubmitBtn
+          handleSubmit={handleSubmit}
+          handleAddOrEditItem={handleAddOrEditItem}
+          updatingItem={updatingItem}
+          isLoading={isLoading}
+          selectedItem={selectedItem}
+        />
       </Modal.Footer>
     </Modal>
   )

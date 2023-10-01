@@ -53,6 +53,8 @@ const AppRouter = () => {
             <Route path='item/:id' element={<ItemDetails />} />
             <Route path='item/' element={<NewItem />} />
 
+            {/* <Route path='purchase-order/' element={<NewPurchaseOrder />} /> */}
+
             {/* <Route element={<ProtectedRoute allowedRoles={[ROLES.Admin]} />}>
             <Route path='admin' element={<Admin />} />
           </Route> */}

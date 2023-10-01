@@ -1,6 +1,6 @@
 import { IPagination } from '../types'
 
-export interface IItem {
+export interface IPurchaseOrder {
   itemDescription: string
   itemID: string
   itemNumber: string
@@ -11,11 +11,11 @@ export interface IItem {
   autoReorder: boolean
 }
 
-export interface IItems extends IPagination {
-  items: IItem[]
+export interface IPurchaseOrders extends IPagination {
+  purchaseOrders: IPurchaseOrder[]
 }
 
-interface IItemFormInputs {
+interface IPurchaseOrderFormInputs {
   itemNumber: string
   itemDescription: string
   itemUM: string
@@ -23,8 +23,8 @@ interface IItemFormInputs {
   maxInventory: number
 }
 
-export interface IItemFormFields {
-  name: keyof IItemFormInputs
+export interface IPurchaseOrderFormFields {
+  name: keyof IPurchaseOrderFormInputs
   displayName: string
   defaultValue: string | number
   validationOptions: {

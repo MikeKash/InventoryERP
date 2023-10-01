@@ -84,7 +84,7 @@ namespace InventoryERP.Controllers
                 totalPages = paginatedItemsList.TotalPages,
                 currentPage = paginatedItemsList.PageIndex,
                 hasNextPage = paginatedItemsList.HasNextPage,
-                hasPeviousPage = paginatedItemsList.HasPreviousPage,
+                hasPreviousPage = paginatedItemsList.HasPreviousPage,
                 totalRecords = paginatedItemsList.TotalRecords,
                 items = paginatedItemsList
             };
